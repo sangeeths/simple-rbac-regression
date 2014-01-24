@@ -10,7 +10,7 @@ def time_me(method):
         stop = time.time()
 #        print '%r - %2.2f sec' % \
 #              (method.__name__, stop-start)
-        t = '%-10.2f' % (stop-start)
+        t = '%-10.4f' % (stop-start)
         print t,
         return r
     return timer

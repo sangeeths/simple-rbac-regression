@@ -4,3 +4,7 @@
 *.egg
 *.egg-info
 *~
+functions.py
+resources.py
+roles.py
+rules.py

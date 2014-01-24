@@ -3,7 +3,7 @@ from test import parser as p
 from test.util import time_me
 from test.scripts import generate_samples
 from random import randint
-import test.functions
+import test.functions as tf
 
 
 import logging
@@ -17,7 +17,7 @@ logging.basicConfig(filename='/tmp/test.log',
 def run_test():
     try:
         f = "test_func_%d" % randint(0, 9)
-        func = getattr(test.functions, f)
+        func = getattr(tf, f)
         logging.debug("calling %s" % f)
         func()
         msg = "(s)"     # s = success
@@ -40,7 +40,7 @@ def main(args):
         generate_samples(args.roles, args.resources)
         ro = args.roles
         re = args.resources
-        ru = ro * re
+        ru = ro * re * 4
     else:
         logging.debug("Loading roles, resources and rules from old config..")
         from test import roles, resources, rules
