@@ -6,57 +6,37 @@ from test.util import time_me
 from test import ACL
 
 
-func_file = join(dirname(dirname(abspath(__file__))), "function.py")
+func_file = join(dirname(dirname(abspath(__file__))), "functions.py")
 
 
-def header():
-    hdr   = "from random import randint\n"
-    hdr += "from test.util import time_me\n"
-    hdr += "from test import ACL, CONTEXT\n"
-#    hdr += "from test import roles, resources, rules\n"
-    return hdr
-
-
-def body(resource):
-    final = '\n'
-    final += "@CONTEXT.set_roles_loader\n"
-    final += "@time_me\n"
-    final += "def load_roles():\n"
-    final += "    print 'MYTEST-1'\n"
-    final += "    from test import roles\n"
-    final += "    print 'MYTEST-2'\n"
-    final += "    from test import resources\n"
-    final += "    print 'MYTEST-3'\n"
-    final += "    from test import rules\n"
-    final += "    print 'MYTEST-4'\n"
-    final += "    role = str(ACL._roles.keys()[randint(0, len(ACL._roles)-1)])\n"
-    final += "    yield role\n"
-#    final += "    yield \"role_1\"\n"
-    final += "\n"
-    final += "\n"
-    action   = ACTION[randint(0, len(ACTION)-1)]
-    res = "resource_%d" % (randint(0, resource-1))
-    msg = "Cannot perform ACTION:%s on RESOURCE:%s" % (action, res)
-    final += "@CONTEXT.check_permission(\"%s\", \"%s\", message=\"%s\")\n" % \
-             (action, res, msg)
-    final += "def test_func():\n"
-    final += "    pass\n"
-    final += "\n"
-    return final
-
-
-def trailer():
-    tlr = "# __END__\n"
-    return tlr
-
-
-@time_me
 def generate_function(resource):
     with open(func_file, 'w') as f:
-        f.write(header())
-        f.write(body(resource))
-        f.write(trailer())
-    return
+        f.write("from random import randint\n")
+        f.write("from test.util import time_me\n")
+        f.write("from test import ACL, CONTEXT\n")
+        f.write("from test import roles, resources, rules\n")
+        f.write("\n")
+        f.write("@CONTEXT.set_roles_loader\n")
+        f.write("def load_roles():\n")
+        f.write("    from test import roles\n")
+        f.write("    from test import resources\n")
+        f.write("    from test import rules\n")
+        f.write("    from test import ACL\n")
+        f.write("    role = str(ACL._roles.keys()[randint(0, len(ACL._roles)-1)])\n")
+        f.write("    yield role\n")
+        f.write("\n")
+        f.write("\n")
+        for i in xrange(10):
+            action   = ACTION[randint(0, len(ACTION)-1)]
+            res = "resource_%d" % (randint(0, resource-1))
+            msg = "Cannot perform ACTION:%s on RESOURCE:%s" % (action, res)
+            line = "@CONTEXT.check_permission(\"%s\", \"%s\", message=\"%s\")\n" % \
+                   (action, res, msg)
+            f.write(line)
+            f.write("def test_func_%d():\n" % i)
+            f.write("   pass\n")
+        f.write("\n")
+        f.write("# __END__\n")
 
 
 if __name__ == "__main__":

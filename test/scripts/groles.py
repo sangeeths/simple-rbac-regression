@@ -5,34 +5,14 @@ from test.util import time_me
 
 roles_file = join(dirname(dirname(abspath(__file__))), "roles.py")
 
-
-def header():
-    hdr = "from test import ACL\n"
-    return hdr
-
-
-def body(n):
-    final = '\n'
-    for i in xrange(n):
-        line = "ACL.add_role(\"role_%d\")\n" % i
-        final = final + line
-    final = final + "\n"
-    return final
-
-
-def trailer():
-    tlr = "# __END__\n"
-    return tlr
-
-
-@time_me
 def generate_roles(n):
     with open(roles_file, 'w') as f:
-        f.write(header())
-        f.write(body(n))
-        f.write(trailer())
-    return
-
+        f.write("from test import ACL\n")
+        f.write("\n")
+        for i in xrange(n):
+            f.write("ACL.add_role(\"role_%d\")\n" % i)
+        f.write("\n")
+        f.write("# __END__\n")
 
 if __name__ == "__main__":
     try:
